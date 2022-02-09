@@ -6,9 +6,7 @@ import { token } from './config.json';
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.commands = new Collection();
-const commandFiles = fs
-	.readdirSync('./commands')
-	.filter((file) => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./commands').filter((file) => file.endsWith('.js'));
 
 for (const file of commandFiles) {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
