@@ -1,7 +1,11 @@
 {
-	"extends": "@tsconfig/recommended/tsconfig.json",
-	"compilerOptions": {
-		"resolveJsonModule": true,
-		"outDir": "./dist"
-	}
+  "extends": "@tsconfig/recommended/tsconfig.json",
+
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "sourceMap": true,
+
+    "sourceRoot": "./src",
+    "outDir": "./dist"
+  }
 }
