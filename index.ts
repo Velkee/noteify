@@ -1,24 +1,43 @@
-// Require the necessary discord.js classes
-import { Client, Intents, Interaction } from 'discord.js';
+import fs from 'fs';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { Client, Collection, Intents } = require('discord.js');
 import { token } from './config.json';
 
-// Create new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-// When client is ready, run this code (only once)
+client.commands = new Collection();
+const commandFiles = fs
+	.readdirSync('./commands')
+	.filter((file) => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	const command = require(`./commands/${file}`);
+	client.commands.set(command.data.name, command);
+}
+
 client.once('ready', () => {
 	console.log('Ready!');
 });
 
-client.on('interactionCreate', async (interaction) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+client.on('interactionCreate', async (interaction: any) => {
 	if (!interaction.isCommand()) return;
 
-	const { commandName } = interaction;
+	const command = client.commands.get(interaction.commandName);
 
-	if (commandName === 'ping') {
-		await interaction.reply('Pong!');
+	if (!command) return;
+
+	try {
+		await command.execute(interaction);
+	}
+	catch (error) {
+		console.error(error);
+		await interaction.reply({
+			content: 'There was an error while executing this command!',
+			ephemeral: true,
+		});
 	}
 });
 
-// Login to Discord with your client's token
 client.login(token);

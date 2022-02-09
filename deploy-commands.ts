@@ -1,13 +1,18 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
+import fs from 'fs';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
-import { token, clientId, guildId } from './config.json';
+import { clientId, guildId, token } from './config.json';
 
-const commands = [
-	new SlashCommandBuilder()
-		.setName('ping')
-		.setDescription('Replies with pong!'),
-].map((command) => command.toJSON());
+const commands = [];
+const commandFiles = fs
+	.readdirSync('./commands')
+	.filter((file) => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	const command = require(`./commands/${file}`);
+	commands.push(command.data.toJSON());
+}
 
 const rest = new REST({ version: '9' }).setToken(token);
 
