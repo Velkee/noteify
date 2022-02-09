@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { CommandInteraction } from 'discord.js';
 import { Command } from '../types/command';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -7,7 +8,7 @@ export default class PingCommand implements Command {
     .setName('ping')
     .setDescription('Replies with Pong!');
 
-  async execute(interaction: any) {
+  async execute(interaction: CommandInteraction) {
     await interaction.reply('Pong!');
   }
 }
